@@ -3,7 +3,7 @@
 lazy val `scala-3.0`      = "3.0.0-RC1"
 lazy val `scala-3.0-prev` = "3.0.0-M3"
 lazy val `scala-2.12`     = "2.12.12"
-lazy val `scala-2.13`     = "2.13.3"
+lazy val `scala-2.13`     = "2.13.5"
 
 // Publishing
 name         := "sourcepos"
