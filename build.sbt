@@ -4,10 +4,13 @@ lazy val `scala-2.12`     = "2.12.12"
 lazy val `scala-2.13`     = "2.13.5"
 lazy val `scala-3.0`      = "3.0.0"
 
-// Publishing
-lazy val sourcepos = crossProject(JSPlatform, JVMPlatform)
+lazy val sourcepos = project.in(file("."))
+  .aggregate(core.jvm, core.js)
+  .enablePlugins(NoPublishPlugin)
+
+lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
-  .in(file("."))
+  .in(file("core"))
   .settings(
     name         := "sourcepos",
     organization := "org.tpolecat",
@@ -38,11 +41,21 @@ lazy val sourcepos = crossProject(JSPlatform, JVMPlatform)
     ),
 
     // MUnit
-    libraryDependencies += "org.scalameta" %% "munit" % "0.7.26" % Test,
-    testFrameworks += new TestFramework("munit.Framework"),
+    Compile / unmanagedSourceDirectories ++= {
+      val major = if (scalaVersion.value.startsWith("3")) "-3" else "-2"
+      List(CrossType.Pure, CrossType.Full).flatMap(
+        _.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + major))
+      )
+    },
+    Test / unmanagedSourceDirectories ++= {
+      val major = if (scalaVersion.value.startsWith("3")) "-3" else "-2"
+      List(CrossType.Pure, CrossType.Full).flatMap(
+        _.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + major))
+      )
+    },
+    libraryDependencies += ("org.scalameta" %%% "munit" % "0.7.27" % Test),
 
-    // Scala 2 needs scala-reflect
-    libraryDependencies ++= Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value).filterNot(_ => scalaVersion.value.startsWith("3.")),
+    testFrameworks += new TestFramework("munit.Framework"),
 
     // dottydoc really doesn't work at all right now
     Compile / doc / sources := {
@@ -52,5 +65,14 @@ lazy val sourcepos = crossProject(JSPlatform, JVMPlatform)
       else
         old
     },
-  ).enablePlugins(AutomateHeaderPlugin)
+  )
+  .settings(
+    libraryDependencies ++= {
+      if (scalaVersion.value.startsWith("3")) Nil else List("org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided")
+    }
+  )
+  .jsSettings(
+    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  )
+  .enablePlugins(AutomateHeaderPlugin)
 
