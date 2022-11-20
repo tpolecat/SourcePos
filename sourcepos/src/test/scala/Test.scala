@@ -10,8 +10,8 @@ class Test extends munit.FunSuite {
 
   test("pos") {
     val pos = implicitly[SourcePos]
-    assert(pos.file.endsWith("src/test/scala/Test.scala"))
-    assert(pos.line == 12)
+    assert(clue(pos.file).endsWith("sourcepos/src/test/scala/Test.scala"))
+    assertEquals(pos.line, 12)
   }
 
 }

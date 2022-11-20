@@ -17,7 +17,7 @@ object SourcePosPlatform {
 
   def sourcePos_impl(using ctx: Quotes): Expr[SourcePos] = {
     val rootPosition = ctx.reflect.Position.ofMacroExpansion
-    val file = Expr(rootPosition.sourceFile.jpath.toString)
+    val file = Expr(rootPosition.sourceFile.getJPath.toString)
     val line = Expr(rootPosition.startLine + 1)
     '{SourcePos($file, $line)}
   }
