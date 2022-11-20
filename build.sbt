@@ -7,7 +7,7 @@ lazy val `scala-3.0`      = "3.2.1"
 
 // Publishing
 ThisBuild / organization := "org.tpolecat"
-ThisBuild / licenses    ++= Seq(("MIT", url("http://opensource.org/licenses/MIT")))
+ThisBuild / licenses     := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 ThisBuild / homepage     := Some(url("https://github.com/tpolecat/sourcepos"))
 ThisBuild / developers   := List(
   Developer("tpolecat", "Rob Norris", "rob_norris@mac.com", url("http://www.tpolecat.org"))
