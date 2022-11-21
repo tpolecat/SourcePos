@@ -4,7 +4,6 @@
 
 package org.tpolecat.sourcepos
 
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 trait SourcePosPlatform {
